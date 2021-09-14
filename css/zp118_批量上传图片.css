@@ -148,5 +148,9 @@ module.exports=`
     z-index: 999;
 }
 
+.zp118 .zp101 {
+    display: inline-block;
+}
+
 
 `

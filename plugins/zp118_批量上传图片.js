@@ -2,37 +2,41 @@ import React from "react"
 import css from "../css/zp118_批量上传图片.css"
 
 function render(ref) {
-    const { exc, render, props } = ref
-    if (!props.dbf) return <div>请配置表单字段</div>
-    let uploaded = ref.getForm(props.dbf)
-    if (!Array.isArray(uploaded)) {
-        if (uploaded) warn("表单字段必须是数组")
-        uploaded = []
-    }
+    const { exc, render, props, arr = [] } = ref
+    const isUploading = arr.find(a => a.startsWith("blob"))
     return <React.Fragment>
+        {arr.map((a, i) => <div className={"zp118B zp118_" + i + (a.startsWith("blob") ? " zp118U" : " zp118Z")} onClick={() => { if(!a.startsWith("blob")) { ref.zoom = a; render() }}} key={a + i}>
+            <div/>
+            <img src={a.startsWith("blob") || a.endsWith("svg") ? a : a + "?x-oss-process=image/resize,m_fill,h_300,w_300"}/>
+            {!isUploading && <span onClick={e => remove(ref, i, e)}>{EL.del}</span>}
+            {!isUploading && EL.handle}
+        </div>)}
         {EL.网盘}
         <div className="zp118B">
-            <div>{EL.camera}<label>{props.label || "上传图片"}</label></div>
+            <div>{EL.camera}<label>{props.dbf ? props.label || "上传图片" : "请配置表单字段"}</label></div>
             <input onChange={e => onChange(ref, e)} type="file" accept="image/*" multiple="multiple"/>
         </div>
-        {(ref.uploading || []).map((a, i) => <div className={"zp118B zp118U zp118_" + i} key={a}><div/><img src={a}/></div>)}
-        {uploaded.map((a, i) => <div className="zp118B zp118Z" onClick={() => {ref.zoom = a; render()}} key={a + i}>
-            <img src={a + "?x-oss-process=image/resize,m_fill,h_300,w_300"}/>
-            <span onClick={e => {e.stopPropagation(); exc('confirm("确定要删除吗？")', {}, () => {uploaded.splice(i, 1); ref.setForm(props.dbf, uploaded)})}}>{EL.del}</span>{EL.handle}
-        </div>)}
         {ref.zoom && <div onClick={() => {delete ref.zoom; render()}} className="zmask"><img src={ref.zoom}/>{EL.del}</div>}
+        <div style={{display: "none"}}/>
     </React.Fragment>
 }
 
 function onInit(ref) {
     const { id, exc, props, render } = ref
-    ref.uploading = []
+    const arr = ref.getForm(props.dbf)
+    if (Array.isArray(arr)) {
+        ref.arr = [...arr]
+    } else {
+        if (arr) warn("表单字段必须是数组")
+        ref.arr = []
+    }
     if (props.gallery) {
-        EL.网盘 = render({ t: "Plugin", p: { local: true, ID: "zp101", P: { mineOnly: true, onSelect: '$("#' + id + '").add(url)', type: "i", label: "图库" } } }, id + "_0")
+        EL.网盘 = render({ t: "Plugin", p: { ID: "zp101", P: { mineOnly: true, onSelect: '$("#' + id + '").add(url)', type: "i", label: "图库" } } }, id + "_0")
         ref.container.add = url => {
+            ref.arr.push(url)
             let arr = ref.getForm(props.dbf)
             if (!Array.isArray(arr)) arr = []
-            arr.unshift(url)
+            arr.push(url)
             ref.setForm(props.dbf, arr)
         }
     }
@@ -46,6 +50,8 @@ function onInit(ref) {
                 if (!Array.isArray(arr)) arr = []
                 arr.splice(e.newDraggableIndex, 0, arr.splice(e.oldDraggableIndex, 1)[0])
                 ref.setForm(props.dbf, arr)
+                ref.arr = [...arr]
+                render()
             },
             handle: "#" + id + " .zp118handler",
             draggable: ".zp118Z",
@@ -61,30 +67,50 @@ function onChange(ref, e) {
     if (!arr.length) return exc('warn("请选择图片")')
     arr.forEach((file, i) => setTimeout(() => {
         const x = URL.createObjectURL(file)
-        ref.uploading.push(x)
+        ref.arr.push(x)
         render()
         exc('upload(file, option)', {
             file,
             option: {
                 onProgress: r => {
-                    $("#" + ref.id + " .zp118_" + ref.uploading.indexOf(x) + " div").innerHTML = r.percent + "%"
+                    $("#" + ref.id + " .zp118_" + ref.arr.indexOf(x) + " div").innerHTML = r.percent + "%"
                 },
                 onSuccess: r => {
-                    ref.uploading.splice(ref.uploading.indexOf(x), 1)
                     let arr = ref.getForm(props.dbf)
                     if (!Array.isArray(arr)) arr = []
-                    arr.unshift(r.url)
+                    arr.push(r.url)
                     ref.setForm(props.dbf, arr)
-                    URL.revokeObjectURL(x)
+                    preload(r.url, ref.container, () => {
+                        ref.arr.splice(ref.arr.indexOf(x), 1, r.url)
+                        URL.revokeObjectURL(x)
+                        exc('render()')
+                    })
                 },
                 onError: r => {
                     exc(`alert("上传出错了", r.error)`, { r })
-                    ref.uploading.splice(ref.uploading.indexOf(x), 1)
+                    ref.arr.splice(ref.arr.indexOf(x), 1)
                     URL.revokeObjectURL(x)
                 }
             }
         })
     }, 2000 * i))
+}
+
+function remove(ref, i, e) {
+    e.stopPropagation()
+    ref.exc('confirm("确定要删除吗？")', {}, () => {
+        let arr = ref.getForm(ref.props.dbf)
+        arr.splice(i, 1)
+        ref.arr = [...arr]
+        ref.setForm(ref.props.dbf, arr)
+    })
+}
+
+function preload(url, container, onload) {
+    let el = document.createElement("img")
+    el.src = url.endsWith("svg") ? url : url + "?x-oss-process=image/resize,m_fill,h_300,w_300"
+    el.onload = onload
+    container.lastElementChild.appendChild(el)
 }
 
 $plugin({
