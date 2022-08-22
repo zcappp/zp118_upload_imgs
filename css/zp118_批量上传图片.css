@@ -124,8 +124,8 @@ module.exports=`
     left: 0px;
     bottom: 0px;
     cursor: pointer;
-    width: 20px;
-    padding: 2px;
+    width: 14px;
+    padding: 5px;
     border-top-right-radius: 10px;
 }
 
