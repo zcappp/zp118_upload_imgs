@@ -6,6 +6,7 @@ module.exports=`
     position: relative;
     width: 152px;
     height: 152px;
+    color: rgb(81 81 81);
     margin: 1px;
     border: 1px solid rgb(221, 221, 221);
     border-radius: 2px;
@@ -47,6 +48,17 @@ module.exports=`
     fill: grey;
     background: #ffffffb3;
     cursor: pointer;
+}
+
+.zp118B span {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    cursor: pointer;
+    background: #e3e3e3;
+    border-top-right-radius: 7px;
+    padding: 2px;
+    z-index: 9;
 }
 
 .zp118B .zp118camera {
@@ -151,6 +163,16 @@ module.exports=`
 
 .zp118 .zp101 {
     display: inline-block;
+}
+
+.zp118 .zmodal {
+    width: 750px;
+    max-width: calc(100% - 8px);
+}
+
+.zp118 .zmodal textarea {
+    width: 100%;
+    white-space: nowrap;
 }
 
 
