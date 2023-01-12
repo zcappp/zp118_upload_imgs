@@ -5,8 +5,8 @@ function render(ref) {
     const { exc, render, props, arr = [] } = ref
     const isUploading = arr.find(a => a.startsWith("blob"))
     return <React.Fragment>
-        {arr.map((a, i) => <div className={"zp118B zp118_" + i + (a.startsWith("blob") ? " zp118U" : " zp118Z")} onClick={() => { if(!a.startsWith("blob")) { ref.zoom = a; render() }}} key={a + i}>
-            <div/>
+        {arr.map((a, i) => <div className={"zp118B zp118_" + i + (a.startsWith("blob") ? " zp118U" : " zp118Z")} onClick={() => popImg(ref, a)} key={a + i}>
+            <div className="zp118progress"/>
             <img src={a.startsWith("blob") || a.endsWith("svg") ? a : a + "?x-oss-process=image/resize,m_fill,h_300,w_300"}/>
             {!isUploading && <svg onClick={e => remove(ref, i, e)} className="zsvg zp118del" viewBox="64 64 896 896"><path d={EL.remove}/></svg>}
             {!isUploading && EL.handle}
@@ -15,11 +15,9 @@ function render(ref) {
         <div className="zp118B">
             <div>{EL.camera}<label>{props.dbf ? props.label || "上传图片" : "请配置表单字段"}</label></div>
             <input onChange={e => onChange(ref, e)} type="file" accept="image/*" multiple="multiple"/>
-            {!!ref.props.url && <span onClick={() => url(ref)}>URL</span>}
+            {!!ref.props.url && <span onClick={() => popUrl(ref)}>URL</span>}
             {ref.modal}
         </div>
-        {ref.zoom && <div onClick={() => {delete ref.zoom; render()}} className="zmask"><img src={ref.zoom}/>{EL.del}</div>}
-        <div style={{display: "none"}}/>
     </React.Fragment>
 }
 
@@ -75,7 +73,7 @@ function onChange(ref, e) {
             file,
             option: {
                 onProgress: r => {
-                    $("#" + ref.id + " .zp118_" + ref.arr.indexOf(x) + " div").innerHTML = r.percent + "%"
+                    $("#" + ref.id + " .zp118_" + ref.arr.indexOf(x) + " .zp118progress").innerHTML = r.percent + "%"
                 },
                 onSuccess: r => {
                     let arr = ref.getForm(props.dbf)
@@ -116,7 +114,7 @@ function preload(url, container, onload) {
     container.lastElementChild.appendChild(el)
 }
 
-function url(ref) {
+function popUrl(ref) {
     ref.modal = <div className="zmodals">
         <div className="zmask" onClick={() => close(ref)}/>
         <div className="zmodal">
@@ -131,6 +129,18 @@ function url(ref) {
     </div>
     ref.render()
     setTimeout(() => $(".zp118B .zmodal textarea").focus(), 9)
+}
+
+function popImg(ref, img) {
+    ref.modal = <div className="zmodals">
+        <div className="zmask" onClick={() => close(ref)}/>
+        <div className="zmodal">
+            <svg onClick={() => close(ref)} className="zsvg" viewBox="64 64 896 896"><path d={EL.remove}/></svg>
+            <div className="zmodal-hd">{ref.props.dbf}</div>
+            <div className="zcenter" style={{minHeight:"200px"}}><img src={img}/></div>
+        </div>
+    </div>
+    ref.render()
 }
 
 function close(ref) {
