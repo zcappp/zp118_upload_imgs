@@ -73,6 +73,10 @@ module.exports=`
     width: 40%;
 }
 
+.zp118B:last-child img {
+  display: none;
+}
+
 .zp118B svg:hover,
 .zp118 .zmask svg:hover {
     fill: rgb(9, 187, 7) !important;
