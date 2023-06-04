@@ -73,8 +73,8 @@ module.exports=`
     width: 40%;
 }
 
-.zp118B:last-child img {
-  display: none;
+.zp118B:last-child > img {
+   display: none;
 }
 
 .zp118B svg:hover,
