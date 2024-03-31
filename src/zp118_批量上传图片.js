@@ -120,11 +120,11 @@ function popUrl(ref) {
         <div className="zmask" onClick={() => close(ref)}/>
         <div className="zmodal">
             <svg onClick={() => close(ref)} className="zsvg" viewBox="64 64 896 896"><path d={EL.remove}/></svg>
-            <div className="zmodal-hd">通过URL上传</div>
-            <div className="zmodal-bd"><textarea rows="10" placeholder="把图片URL粘贴在这里，每行一条" className="zinput"/></div>
-            <div className="zmodal-ft">
+            <div className="hd">通过URL上传</div>
+            <div className="bd"><textarea rows="10" placeholder="把图片URL粘贴在这里，每行一条" className="zinput"/></div>
+            <div className="ft">
                 <div className="zbtn" onClick={() => close(ref)}>取消</div>
-                <div className="zbtn zprimary" onClick={() => upload(ref)}>上传</div>
+                <div className="zbtn main" onClick={() => upload(ref)}>上传</div>
             </div>
         </div>
     </div>
@@ -137,7 +137,7 @@ function popImg(ref, img) {
         <div className="zmask" onClick={() => close(ref)}/>
         <div className="zmodal">
             <svg onClick={() => close(ref)} className="zsvg" viewBox="64 64 896 896"><path d={EL.remove}/></svg>
-            <div className="zmodal-hd">{ref.props.dbf}</div>
+            <div className="hd">{ref.props.dbf}</div>
             <div className="zcenter" style={{minHeight:"200px"}}><img src={img}/></div>
         </div>
     </div>
