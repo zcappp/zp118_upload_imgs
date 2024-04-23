@@ -5,7 +5,7 @@ function render(ref) {
     const { exc, render, props, arr = [] } = ref
     const isUploading = arr.find(a => a.startsWith("blob"))
     return <React.Fragment>
-        {arr.map((a, i) => <div className={"zp118B zp118_" + i + (a.startsWith("blob") ? " zp118U" : " zp118Z")} onClick={() => popImg(ref, a)} key={a + i}>
+        {arr.map((a, i) => <div className={"zp118B zp118_" + i + (a.startsWith("blob") ? " zp118U" : " zp118Z")} onClick={() => preview(ref, a)} key={a + i}>
             <div className="zp118progress"/>
             <img src={a.startsWith("blob") || a.endsWith("svg") ? a : a + "?x-oss-process=image/resize,m_fill,h_300,w_300"}/>
             {!isUploading && <svg onClick={e => remove(ref, i, e)} className="zsvg zp118del" viewBox="64 64 896 896"><path d={EL.remove}/></svg>}
@@ -119,8 +119,8 @@ function popUrl(ref) {
     ref.modal = <div className="zmodals">
         <div className="zmask" onClick={() => close(ref)}/>
         <div className="zmodal">
-            <svg onClick={() => close(ref)} className="zsvg" viewBox="64 64 896 896"><path d={EL.remove}/></svg>
-            <div className="hd">通过URL上传</div>
+            <svg onClick={() => close(ref)} className="zsvg x" viewBox="64 64 896 896"><path d={EL.remove}/></svg>
+            <h3 className="hd">通过URL上传</h3>
             <div className="bd"><textarea rows="10" placeholder="把图片URL粘贴在这里，每行一条" className="zinput"/></div>
             <div className="ft">
                 <div className="zbtn" onClick={() => close(ref)}>取消</div>
@@ -129,19 +129,23 @@ function popUrl(ref) {
         </div>
     </div>
     ref.render()
-    setTimeout(() => $(".zp118B .zmodal textarea").focus(), 9)
+    setTimeout(() => {
+        $(".zp118B .zmodals").classList.add("open")
+        $(".zp118B .zmodal textarea").focus()
+    }, 99)
 }
 
-function popImg(ref, img) {
+function preview(ref, img) {
     ref.modal = <div className="zmodals">
         <div className="zmask" onClick={() => close(ref)}/>
         <div className="zmodal">
-            <svg onClick={() => close(ref)} className="zsvg" viewBox="64 64 896 896"><path d={EL.remove}/></svg>
-            <div className="hd">{ref.props.dbf}</div>
+            <svg onClick={() => close(ref)} className="zsvg x" viewBox="64 64 896 896"><path d={EL.remove}/></svg>
+            <h3 className="hd">{ref.props.dbf}</h3>
             <div className="zcenter" style={{minHeight:"200px"}}><img src={img}/></div>
         </div>
     </div>
     ref.render()
+    setTimeout(() => $(".zp118B .zmodals").classList.add("open"), 99)
 }
 
 function close(ref) {
