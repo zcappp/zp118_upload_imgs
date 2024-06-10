@@ -45,41 +45,22 @@ module.exports=`
     cursor: pointer;
 }
 
-.zp118B svg {
-    position: absolute;
-    fill: grey;
-    background: #ffffffb3;
-    cursor: pointer;
-}
-
-.zp118B span {
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    cursor: pointer;
-    background: #e3e3e3;
-    border-top-right-radius: 7px;
-    padding: 2px;
-    z-index: 9;
-    font-size: 13px;
-}
-
-.zp118B .zp118camera {
+.zp118B .zphoto {
     position: absolute;
     top: 35%;
     left: 50%;
     transform: translate(-50%, -50%);
-    fill: rgba(0, 0, 0, 0.2);
-    width: 40%;
+    font-size: 2em;
+    padding: 0;
+    color: silver;
+}
+
+.zp118noLabel .zphoto {
+    top: 50%;
 }
 
 .zp118B:last-child > img {
    display: none;
-}
-
-.zp118B svg:hover,
-.zp118 .zmask svg:hover {
-    fill: rgb(9, 187, 7) !important;
 }
 
 .zp118Drag {
@@ -127,12 +108,16 @@ module.exports=`
 }
 
 .zp118handler {
+    position: absolute;
     right: 0px;
     bottom: 0px;
     cursor: grab !important;
     width: 15px;
     padding: 2px;
+    background: #ffffffb3;
     border-top-left-radius: 10px;
+    color: grey;
+    font-size: 11px;
 }
 
 .zp118del {
@@ -160,17 +145,16 @@ module.exports=`
     cursor: zoom-out;
 }
 
-.zp118 .zmask svg {
-    fill: grey;
-    width: 30px;
-    position: fixed;
-    top: 9px;
-    right: 9px;
-    z-index: 999;
-}
-
-.zp118 .zp101 {
-    display: inline-block;
+.zp118url {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    cursor: pointer;
+    background: #e3e3e3;
+    border-top-right-radius: 7px;
+    padding: 2px;
+    z-index: 9;
+    font-size: 13px;
 }
 
 .zp118 .zmodal {
